@@ -1,7 +1,29 @@
 {
   "users": [
-    {"id":"founder_william","username":"william","displayName":"William","memberType":"legend","isFounder":true,"joinedAt":"2027-01-01T00:00:00.000Z"},
-    {"id":"founder_bennett","username":"bennett","displayName":"Bennett","memberType":"legend","isFounder":true,"joinedAt":"2027-01-01T00:00:00.000Z"}
+    {
+      "id": "founder_william",
+      "username": "william",
+      "displayName": "William",
+      "memberType": "legend",
+      "isFounder": true,
+      "joinedAt": "2027-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "founder_bennett",
+      "username": "bennett",
+      "displayName": "Bennett",
+      "memberType": "legend",
+      "isFounder": true,
+      "joinedAt": "2027-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "u_1775181439642_cfpkpr2",
+      "username": "robert",
+      "displayName": "robert",
+      "memberType": "member",
+      "isFounder": false,
+      "joinedAt": "2026-04-03T01:57:19.642Z"
+    }
   ],
   "picks": []
 }
