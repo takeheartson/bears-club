@@ -186,17 +186,20 @@ function userStats(userId) {
   return { total, correct, exact, scored, picks: picks.length };
 }
 
+const FOUNDER_ORDER = ['founder_william', 'founder_bennett'];
+
 function getRankings() {
-  return DB.users
-    .map(u => ({ ...u, ...userStats(u.id) }))
+  const users = DB.users.map(u => ({ ...u, ...userStats(u.id) }));
+  const founders = FOUNDER_ORDER.map(id => users.find(u => u.id === id)).filter(Boolean);
+  const others   = users
+    .filter(u => !u.isFounder)
     .sort((a, b) => {
       if (b.total !== a.total) return b.total - a.total;
       if (b.exact !== a.exact) return b.exact - a.exact;
       if (b.correct !== a.correct) return b.correct - a.correct;
-      if (a.isFounder && !b.isFounder) return -1;
-      if (!a.isFounder && b.isFounder) return 1;
       return 0;
     });
+  return [...founders, ...others];
 }
 
 // ── UI helpers ───────────────────────────────────────────

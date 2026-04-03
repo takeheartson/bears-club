@@ -63,8 +63,11 @@ function renderMembers() {
     grid.innerHTML = users
       .slice()
       .sort((a, b) => {
-        if (a.isFounder && !b.isFounder) return -1;
-        if (!a.isFounder && b.isFounder) return 1;
+        const fo = ['founder_william','founder_bennett'];
+        const ai = fo.indexOf(a.id), bi = fo.indexOf(b.id);
+        if (ai !== -1 && bi !== -1) return ai - bi;
+        if (ai !== -1) return -1;
+        if (bi !== -1) return 1;
         return new Date(a.joinedAt) - new Date(b.joinedAt);
       })
       .map(u => {
