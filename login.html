@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Da Bears Score Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Pick Scores</a></li>
+    <li><a href="rankings.html">Rankings</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth"></div>
+</nav>
+
+<div class="form-container">
+  <span class="form-top-icon">🐻</span>
+
+  <div class="form-card">
+    <h1 class="form-title">Welcome Back!</h1>
+    <p class="form-subtitle">Enter your username to get back in the game</p>
+
+    <div id="msg"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input type="text" id="username" class="form-input" placeholder="Your username" required autofocus>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:0.85rem;margin-top:0.25rem;font-size:0.95rem">
+        Sign In
+      </button>
+    </form>
+
+    <hr class="divider">
+    <p style="text-align:center;color:var(--gray);font-size:0.88rem">
+      Don't have an account?
+      <a href="register.html" style="color:var(--orange);font-weight:700">Join free</a>
+    </p>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+  if (isLoggedIn()) window.location.href = 'games.html';
+
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const uname = document.getElementById('username').value;
+    const msg   = document.getElementById('msg');
+    const res   = login(uname);
+
+    if (res.ok) {
+      msg.innerHTML = '<div class="alert alert-success">✅ Signed in! Redirecting...</div>';
+      const params = new URLSearchParams(location.search);
+      setTimeout(() => location.href = params.get('r') || 'games.html', 1000);
+    } else {
+      msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
+    }
+  });
+</script>
+
+</body>
+</html>

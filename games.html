@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Scores — Da Bears Score Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html" class="active">Pick Scores</a></li>
+    <li><a href="rankings.html">Rankings</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth"></div>
+</nav>
+
+<div class="page-header">
+  <h1>🏈 2027 Season — Pick the Scores</h1>
+  <p>Predict the final score for every Bears game. Picks lock when the game kicks off.</p>
+</div>
+
+<div style="max-width:1080px;margin:0 auto;padding:0 1.5rem 3rem">
+
+  <!-- Stats (logged-in only) -->
+  <div id="stats-section" style="display:none;margin-bottom:1.75rem">
+    <div class="stats-row" id="stats-row"></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('all', this)">All Games</button>
+    <button class="tab-btn" onclick="showTab('mypicks', this)" id="mypicks-tab">My Picks</button>
+  </div>
+
+  <!-- Auth prompt (logged-out) -->
+  <div id="auth-prompt" style="display:none">
+    <div class="auth-prompt">
+      <span class="ap-icon">🔐</span>
+      <h3>Sign in to make your picks</h3>
+      <p>You can view the schedule below, but you need an account to submit your score predictions.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center">
+        <a href="register.html" class="btn btn-primary">Join Free</a>
+        <a href="login.html" class="btn btn-outline">Sign In</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Games list -->
+  <div class="games-grid" id="games-list"></div>
+
+  <!-- My picks tab content -->
+  <div id="mypicks-content" style="display:none">
+    <div class="games-grid" id="mypicks-list"></div>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<footer>
+  <div>🐻 Da Bears Score Club &bull; Founded by William &amp; Bennett</div>
+  <div>Free forever. Bear Down! 🏈</div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+let activeTab = 'all';
+let currentUser = null;
+
+function showTab(tab, btn) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('games-list').style.display     = tab === 'all'     ? 'flex' : 'none';
+  document.getElementById('mypicks-content').style.display = tab === 'mypicks' ? 'block' : 'none';
+}
+
+function ptsBadge(pts) {
+  if (pts === null) return '';
+  const cls = pts === 10 ? 'pts-10' : pts === 7 ? 'pts-7' : pts === 5 ? 'pts-5' : pts === 3 ? 'pts-3' : 'pts-0';
+  const lbl = pts === 10 ? '🎯 10 pts — EXACT!' : pts === 7 ? '⭐ 7 pts' : pts === 5 ? '5 pts' : pts === 3 ? '3 pts' : '0 pts';
+  return `<span class="pick-result-pts ${cls}">${lbl}</span>`;
+}
+
+function renderGameCard(game, user, showPickForm) {
+  const isBye = !!game.isBye;
+  if (isBye) {
+    return `<div class="game-card is-bye">
+      <div class="game-meta-row">
+        <span class="game-week-label">Week ${game.week}</span>
+        <span class="game-status-tag status-bye">BYE WEEK</span>
+      </div>
+      <div style="text-align:center;color:var(--gray);padding:0.5rem 0;font-size:0.9rem">Chicago Bears — Bye Week &bull; ${game.date}</div>
+    </div>`;
+  }
+
+  const homeTeam = game.home ? 'Chicago Bears' : game.opp;
+  const awayTeam = game.home ? game.opp       : 'Chicago Bears';
+  const homeIsB  = game.home;
+  const awayIsB  = !game.home;
+
+  let matchupHTML = '';
+  if (game.complete) {
+    const bearsFinal = game.finalBears;
+    const oppFinal   = game.finalOpp;
+    const homeScore  = game.home ? bearsFinal : oppFinal;
+    const awayScore  = game.home ? oppFinal   : bearsFinal;
+    matchupHTML = `<div class="game-matchup">
+      <div class="team-block" style="text-align:right">
+        <div class="team-name-main ${homeIsB?'is-bears':''}">${homeTeam}</div>
+        <div class="team-location-small">${game.home ? 'Soldier Field' : game.venue}</div>
+      </div>
+      <div class="vs-block">
+        <div class="at-home-tag">${game.home ? 'HOME' : '@ AWAY'}</div>
+        <div class="vs-final">${homeScore} – ${awayScore}</div>
+        <div style="font-size:0.7rem;color:#5bd378;margin-top:0.15rem">FINAL</div>
+      </div>
+      <div class="team-block">
+        <div class="team-name-main ${awayIsB?'is-bears':''}">${awayTeam}</div>
+        <div class="team-location-small">${!game.home ? 'Soldier Field' : game.venue}</div>
+      </div>
+    </div>`;
+  } else {
+    matchupHTML = `<div class="game-matchup">
+      <div class="team-block" style="text-align:right">
+        <div class="team-name-main ${homeIsB?'is-bears':''}">${homeTeam}</div>
+        <div class="team-location-small">${game.home ? 'Soldier Field' : game.venue}</div>
+      </div>
+      <div class="vs-block">
+        <div class="at-home-tag">${game.home ? 'HOME' : '@ AWAY'}</div>
+        <div style="font-size:0.95rem;color:var(--gray);font-weight:700">VS</div>
+        <div style="font-size:0.72rem;color:var(--gray);margin-top:0.1rem">${game.time}</div>
+      </div>
+      <div class="team-block">
+        <div class="team-name-main ${awayIsB?'is-bears':''}">${awayTeam}</div>
+        <div class="team-location-small">${!game.home ? 'Soldier Field' : game.venue}</div>
+      </div>
+    </div>`;
+  }
+
+  let pickHTML = '';
+  if (showPickForm && !game.complete) {
+    const pick = user ? getUserPick(user.id, game.id) : null;
+    const bVal = pick ? pick.bearsScore : '';
+    const oVal = pick ? pick.oppScore   : '';
+    const hasPick = pick !== null;
+
+    // Label order: Bears score first if home, opp score first if away
+    const leftLabel  = game.home ? 'Bears' : game.opp;
+    const rightLabel = game.home ? game.opp : 'Bears';
+    const leftId     = `h_${game.id}`;
+    const rightId    = `a_${game.id}`;
+    const leftVal    = game.home ? bVal : oVal;
+    const rightVal   = game.home ? oVal : bVal;
+
+    pickHTML = `
+      <div class="pick-row">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+          <span style="font-size:0.78rem;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:0.05em">Your Pick:</span>
+          <div class="pick-inputs">
+            <span style="font-size:0.75rem;color:var(--gray)">${leftLabel}</span>
+            <input type="number" class="score-input" id="${leftId}" min="0" max="99" value="${leftVal}" placeholder="—">
+            <span class="score-dash">–</span>
+            <input type="number" class="score-input" id="${rightId}" min="0" max="99" value="${rightVal}" placeholder="—">
+            <span style="font-size:0.75rem;color:var(--gray)">${rightLabel}</span>
+          </div>
+        </div>
+        <div class="pick-actions">
+          ${hasPick ? `<span class="pick-saved-tag" id="saved_${game.id}">✓ SAVED</span>` : `<span style="font-size:0.72rem;color:var(--gray)" id="saved_${game.id}"></span>`}
+          <button class="btn btn-primary btn-sm" onclick="submitPick('${game.id}','${leftId}','${rightId}','${game.home}')">
+            ${hasPick ? 'Update' : 'Save Pick'}
+          </button>
+        </div>
+      </div>`;
+  } else if (game.complete && user) {
+    const pick = getUserPick(user.id, game.id);
+    if (pick) {
+      const pts = calcPoints(pick, game);
+      const pHome = game.home ? pick.bearsScore : pick.oppScore;
+      const pAway = game.home ? pick.oppScore   : pick.bearsScore;
+      pickHTML = `
+        <div class="pick-row">
+          <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+            <span style="font-size:0.78rem;color:var(--gray)">Your pick:</span>
+            <span style="font-weight:800">${pHome} – ${pAway}</span>
+            ${ptsBadge(pts)}
+          </div>
+        </div>`;
+    } else if (showPickForm) {
+      pickHTML = `<div class="pick-row"><span style="font-size:0.78rem;color:var(--gray)">You didn't pick this game.</span></div>`;
+    }
+  } else if (!game.complete && !user) {
+    pickHTML = `<div class="pick-row">
+      <span style="font-size:0.8rem;color:var(--gray)"><a href="register.html" style="color:var(--orange);font-weight:700">Join free</a> to submit your pick</span>
+    </div>`;
+  }
+
+  const statusTag = game.complete
+    ? '<span class="game-status-tag status-complete">Final</span>'
+    : '<span class="game-status-tag status-upcoming">Upcoming</span>';
+
+  return `<div class="game-card ${game.complete?'is-complete':''}">
+    <div class="game-meta-row">
+      <div>
+        <span class="game-week-label">Week ${game.week}</span>
+        <span class="game-date-label" style="margin-left:0.75rem">${game.date}</span>
+      </div>
+      ${statusTag}
+    </div>
+    ${matchupHTML}
+    ${pickHTML}
+  </div>`;
+}
+
+function submitPick(gameId, leftId, rightId, homeIsBears) {
+  homeIsBears = homeIsBears === 'true' || homeIsBears === true;
+  const leftVal  = parseInt(document.getElementById(leftId).value)  || 0;
+  const rightVal = parseInt(document.getElementById(rightId).value) || 0;
+  const bearsScore = homeIsBears ? leftVal  : rightVal;
+  const oppScore   = homeIsBears ? rightVal : leftVal;
+
+  const res = savePick(gameId, bearsScore, oppScore);
+  const savedEl = document.getElementById('saved_' + gameId);
+  if (res.ok) {
+    if (savedEl) {
+      savedEl.className = 'pick-saved-tag';
+      savedEl.textContent = '✓ SAVED';
+    }
+    // Update button text
+    const btn = savedEl ? savedEl.nextElementSibling : null;
+    if (btn) btn.textContent = 'Update';
+  } else {
+    alert(res.err);
+  }
+}
+
+function renderStats(user) {
+  const stats = userStats(user.id);
+  const section = document.getElementById('stats-section');
+  const row     = document.getElementById('stats-row');
+  section.style.display = 'block';
+  row.innerHTML = `
+    <div class="stat-card"><div class="stat-value">${stats.picks}</div><div class="stat-label">Picks Made</div></div>
+    <div class="stat-card"><div class="stat-value">${stats.total}</div><div class="stat-label">Total Points</div></div>
+    <div class="stat-card"><div class="stat-value">${stats.exact}</div><div class="stat-label">Exact Scores</div></div>
+    <div class="stat-card"><div class="stat-value">${stats.correct}</div><div class="stat-label">Correct Results</div></div>
+  `;
+}
+
+function renderMyPicks(user) {
+  const list = document.getElementById('mypicks-list');
+  const picks = getPicks().filter(p => p.userId === user.id);
+  const pickedGames = SCHEDULE.filter(g => !g.isBye && picks.find(p => p.gameId === g.id));
+  if (pickedGames.length === 0) {
+    list.innerHTML = `<div class="empty-state"><span class="es-icon">🏈</span><p>You haven't made any picks yet.<br><a href="#" onclick="showTab('all', document.querySelector('.tab-btn'));return false" style="color:var(--orange);font-weight:700">Go pick some scores!</a></p></div>`;
+    return;
+  }
+  list.innerHTML = pickedGames.map(g => renderGameCard(g, user, true)).join('');
+}
+
+// ── INIT ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  currentUser = getCurrentUser();
+  const authPrompt = document.getElementById('auth-prompt');
+  const gamesList  = document.getElementById('games-list');
+  const myPicksTab = document.getElementById('mypicks-tab');
+
+  if (!currentUser) {
+    authPrompt.style.display = 'block';
+    myPicksTab.style.display = 'none';
+  } else {
+    renderStats(currentUser);
+  }
+
+  // Render all games
+  gamesList.innerHTML = SCHEDULE.map(g => renderGameCard(g, currentUser, !!currentUser)).join('');
+
+  // My picks tab
+  if (currentUser) {
+    document.getElementById('mypicks-content').innerHTML = `<div class="games-grid" id="mypicks-list"></div>`;
+  }
+});
+
+// Override showTab to also render my picks lazily
+const _origShowTab = showTab;
+window.showTab = function(tab, btn) {
+  _origShowTab(tab, btn);
+  if (tab === 'mypicks' && currentUser) {
+    renderMyPicks(currentUser);
+  }
+};
+</script>
+
+</body>
+</html>

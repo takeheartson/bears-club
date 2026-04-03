@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Club — Da Bears Score Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Pick Scores</a></li>
+    <li><a href="rankings.html">Rankings</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth"></div>
+</nav>
+
+<div class="form-container">
+  <span class="form-top-icon">🐻</span>
+
+  <div class="form-card">
+    <h1 class="form-title">Join the Club</h1>
+    <p class="form-subtitle">Free forever. Pick scores. Win bragging rights.</p>
+
+    <div id="msg"></div>
+
+    <form id="reg-form">
+      <div class="form-group">
+        <label class="form-label" for="displayName">Your Name</label>
+        <input type="text" id="displayName" class="form-input" placeholder="e.g. Mike Ditka Jr." maxlength="30" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input type="text" id="username" class="form-input" placeholder="e.g. bearsfan42" maxlength="20" required>
+        <div class="form-hint">Letters, numbers, and underscores only</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Member Type</label>
+        <div class="member-type-grid">
+          <label class="member-type-option">
+            <input type="radio" name="mtype" value="member" checked>
+            <div class="member-type-label">
+              <span class="member-type-icon">🏈</span>
+              <div class="member-type-name">Member</div>
+              <div class="member-type-desc">Standard Bears fan</div>
+            </div>
+          </label>
+          <label class="member-type-option">
+            <input type="radio" name="mtype" value="legend">
+            <div class="member-type-label">
+              <span class="member-type-icon">⭐</span>
+              <div class="member-type-name">Legend</div>
+              <div class="member-type-desc">Gold status superfan</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:0.85rem;margin-top:0.25rem;font-size:0.95rem">
+        Create My Account — Free!
+      </button>
+    </form>
+
+    <hr class="divider">
+    <p style="text-align:center;color:var(--gray);font-size:0.88rem">
+      Already have an account?
+      <a href="login.html" style="color:var(--orange);font-weight:700">Sign in</a>
+    </p>
+  </div>
+
+  <p style="text-align:center;color:var(--gray);font-size:0.78rem;margin-top:1rem">
+    100% free. No credit card. No spam. Bear Down! 🐻
+  </p>
+</div>
+
+<script src="app.js"></script>
+<script>
+  // If already logged in, redirect
+  if (isLoggedIn()) window.location.href = 'games.html';
+
+  document.getElementById('reg-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name  = document.getElementById('displayName').value;
+    const uname = document.getElementById('username').value;
+    const mtype = document.querySelector('input[name="mtype"]:checked').value;
+    const msg   = document.getElementById('msg');
+
+    const res = register(name, uname, mtype);
+    if (res.ok) {
+      msg.innerHTML = '<div class="alert alert-success">🎉 Welcome to Da Bears Club! Taking you to the picks...</div>';
+      setTimeout(() => location.href = 'games.html', 1400);
+    } else {
+      msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
+    }
+  });
+</script>
+
+</body>
+</html>

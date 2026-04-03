@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rankings — Da Bears Score Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Pick Scores</a></li>
+    <li><a href="rankings.html" class="active">Rankings</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth"></div>
+</nav>
+
+<div class="page-header">
+  <h1>🏆 Club Rankings</h1>
+  <p>Season standings for the 2027 Da Bears Score Club. Points awarded once games are final.</p>
+</div>
+
+<div style="max-width:1080px;margin:0 auto;padding:0 1.5rem 3rem">
+
+  <!-- Top 3 podium (rendered dynamically) -->
+  <div id="podium" style="display:none;justify-content:center;align-items:flex-end;gap:1rem;margin-bottom:2.5rem;flex-wrap:wrap"></div>
+
+  <!-- Legend / info strip -->
+  <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem">
+    <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.8rem;color:var(--gray)">
+      <span class="badge badge-founder">Founder</span> Club co-founder
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.8rem;color:var(--gray)">
+      <span class="badge badge-legend">Legend</span> Gold-tier member
+    </div>
+    <div style="display:flex;gap:0.6rem;align-items:center;font-size:0.8rem;color:var(--gray)">
+      <span class="badge badge-member">Member</span> Standard member
+    </div>
+  </div>
+
+  <!-- Main table -->
+  <div class="rankings-wrap">
+    <table class="rankings-table">
+      <thead>
+        <tr>
+          <th style="width:50px">#</th>
+          <th>Member</th>
+          <th style="text-align:right">Points</th>
+          <th style="text-align:right">Exact Scores</th>
+          <th style="text-align:right">Correct Results</th>
+          <th style="text-align:right">Picks Made</th>
+        </tr>
+      </thead>
+      <tbody id="rankings-body">
+        <tr><td colspan="6" style="text-align:center;padding:2rem;color:var(--gray)">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CTA for non-members -->
+  <div id="join-cta" style="display:none;margin-top:2rem;text-align:center">
+    <div style="color:var(--gray);font-size:0.9rem;margin-bottom:0.75rem">Want to appear on the rankings?</div>
+    <a href="register.html" class="btn btn-primary">Join the Club — Free</a>
+  </div>
+
+  <!-- Points guide -->
+  <div class="card" style="margin-top:2rem">
+    <h3 style="font-size:1rem;font-weight:800;margin-bottom:1rem">🎯 How Points Are Scored</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;font-size:0.85rem">
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span style="font-size:1.3rem;font-weight:900;color:var(--orange);width:30px;text-align:right">10</span>
+        <span style="color:var(--gray)">Exact final score — both teams</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span style="font-size:1.3rem;font-weight:900;color:var(--gold);width:30px;text-align:right">7</span>
+        <span style="color:var(--gray)">Right winner + within 3 pts each team</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span style="font-size:1.3rem;font-weight:900;color:#aab8d0;width:30px;text-align:right">5</span>
+        <span style="color:var(--gray)">Right winner + within 7 pts each team</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:0.75rem">
+        <span style="font-size:1.3rem;font-weight:900;color:#5a6a8a;width:30px;text-align:right">3</span>
+        <span style="color:var(--gray)">Correct winner, any margin</span>
+      </div>
+    </div>
+    <div style="font-size:0.78rem;color:var(--gray);margin-top:0.75rem;border-top:1px solid var(--border);padding-top:0.75rem">
+      Tiebreaker order: Total points → Exact scores → Correct results → Founders first
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>🐻 Da Bears Score Club &bull; Founded by William &amp; Bennett</div>
+  <div>Free forever. Bear Down! 🏈</div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+function rankIcon(i) {
+  if (i === 0) return '🥇';
+  if (i === 1) return '🥈';
+  if (i === 2) return '🥉';
+  return '';
+}
+
+function renderPodium(ranked) {
+  if (ranked.length === 0) return;
+  const podium = document.getElementById('podium');
+
+  const top = ranked.slice(0, Math.min(3, ranked.length));
+  // Reorder: 2nd, 1st, 3rd (classic podium)
+  const order = top.length === 1 ? [top[0]] :
+                top.length === 2 ? [top[0], top[1]] :
+                [top[1], top[0], top[2]];
+  const heights = top.length === 1 ? ['130px'] :
+                  top.length === 2 ? ['130px','100px'] :
+                  ['100px','130px','85px'];
+
+  podium.style.display = 'flex';
+  podium.innerHTML = order.map((u, oi) => {
+    const realRank = ranked.indexOf(u);
+    const h = heights[oi];
+    const avClass = u.memberType === 'legend' ? 'player-avatar-sm legend-av' : 'player-avatar-sm';
+    const medalColors = ['#C0C0C0','#FFD700','#CD7F32'];
+    const medal = medalColors[realRank] || 'var(--border)';
+    return `<div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.5rem">
+      <div style="font-size:1.6rem">${rankIcon(realRank)}</div>
+      <div class="${avClass}" style="width:48px;height:48px;font-size:1.1rem">${u.displayName[0].toUpperCase()}</div>
+      <div style="font-weight:700;font-size:0.9rem">${u.displayName}</div>
+      <div style="font-size:0.75rem">${badgeHTML(u)}</div>
+      <div style="width:90px;height:${h};background:linear-gradient(to top,${medal}22,${medal}44);border:2px solid ${medal};border-radius:6px 6px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:0.5rem">
+        <span style="font-size:1.1rem;font-weight:900;color:${medal}">${u.total} pts</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(ranked) {
+  const tbody = document.getElementById('rankings-body');
+  const user  = getCurrentUser();
+
+  if (ranked.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6">
+      <div class="empty-state">
+        <span class="es-icon">🏆</span>
+        <p>No members yet — <a href="register.html" style="color:var(--orange);font-weight:700">be the first to join!</a></p>
+      </div>
+    </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = ranked.map((u, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const isMe = user && user.id === u.id;
+    const avClass = u.memberType === 'legend' ? 'player-avatar-sm legend-av' : 'player-avatar-sm';
+    return `<tr class="${isMe?'is-current-user':''}">
+      <td class="rank-num ${rankClass}">${rankIcon(i) || (i+1)}</td>
+      <td>
+        <div class="player-cell">
+          <div class="${avClass}">${u.displayName[0].toUpperCase()}</div>
+          <div>
+            <div class="player-name-main">${u.displayName}${isMe ? ' <span style="font-size:0.7rem;color:var(--gray)">(you)</span>' : ''}</div>
+            <div style="display:flex;gap:0.35rem;margin-top:0.2rem;flex-wrap:wrap">
+              ${badgeHTML(u)}
+              ${u.isFounder ? '' : ''}
+            </div>
+          </div>
+        </div>
+      </td>
+      <td style="text-align:right" class="pts-main">${u.total}</td>
+      <td style="text-align:right" class="sub-stat">${u.exact}</td>
+      <td style="text-align:right" class="sub-stat">${u.correct}</td>
+      <td style="text-align:right" class="sub-stat">${u.picks}</td>
+    </tr>`;
+  }).join('');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const ranked = getRankings();
+  const user   = getCurrentUser();
+
+  renderPodium(ranked);
+  renderTable(ranked);
+
+  if (!user) {
+    document.getElementById('join-cta').style.display = 'block';
+  }
+});
+</script>
+
+</body>
+</html>

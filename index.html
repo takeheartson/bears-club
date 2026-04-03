@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Da Bears Score Club — 2027 Season</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="games.html">Pick Scores</a></li>
+    <li><a href="rankings.html">Rankings</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth">
+    <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+    <a href="register.html" class="btn btn-primary btn-sm">Join Free</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-badge">🏈 2027 NFL Season</div>
+  <h1>Da <span class="highlight">Bears</span><br>Score Club</h1>
+  <p>Chicago's home for Bears fans who think they know football. Predict every game score, earn points, climb the leaderboard — totally free.</p>
+  <div class="hero-btns">
+    <a href="register.html" class="btn btn-primary btn-lg">Join the Club — It's Free!</a>
+    <a href="games.html" class="btn btn-outline btn-lg">View 2027 Schedule</a>
+  </div>
+</div>
+
+<!-- ── How It Works ── -->
+<section>
+  <h2 class="section-title">How It <span>Works</span></h2>
+  <p class="section-subtitle">Simple and free for every Bears fan</p>
+  <div class="how-grid">
+    <div class="how-item">
+      <span class="how-icon">👤</span>
+      <div class="how-title">Create a Free Account</div>
+      <div class="how-desc">Choose your display name and pick your tier — Legend or Member. No cost, ever.</div>
+    </div>
+    <div class="how-item">
+      <span class="how-icon">🏈</span>
+      <div class="how-title">Predict the Score</div>
+      <div class="how-desc">Submit your final score prediction before every Bears game in the 2027 season.</div>
+    </div>
+    <div class="how-item">
+      <span class="how-icon">🎯</span>
+      <div class="how-title">Earn Points</div>
+      <div class="how-desc">Score big for exact predictions, still earn for being close or getting the winner right.</div>
+    </div>
+    <div class="how-item">
+      <span class="how-icon">🏆</span>
+      <div class="how-title">Climb the Rankings</div>
+      <div class="how-desc">Compete against every club member across all 17 games of the season.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Points Breakdown ── -->
+<section style="padding-top:0">
+  <div class="card">
+    <h3 style="margin-bottom:1.1rem;font-size:1.1rem;font-weight:800;">🎯 Points Breakdown</h3>
+    <div class="points-grid">
+      <div class="points-item" style="border-color:rgba(200,56,3,0.35);background:rgba(200,56,3,0.07)">
+        <div class="points-value" style="color:var(--orange)">10</div>
+        <div class="points-label">Exact Score<br><span style="font-size:0.7rem">Both teams spot on</span></div>
+      </div>
+      <div class="points-item" style="border-color:rgba(255,215,0,0.25);background:rgba(255,215,0,0.05)">
+        <div class="points-value" style="color:var(--gold)">7</div>
+        <div class="points-label">Right Winner<br><span style="font-size:0.7rem">Within 3 pts each team</span></div>
+      </div>
+      <div class="points-item">
+        <div class="points-value" style="color:#aab8d0">5</div>
+        <div class="points-label">Right Winner<br><span style="font-size:0.7rem">Within 7 pts each team</span></div>
+      </div>
+      <div class="points-item" style="opacity:0.7">
+        <div class="points-value" style="color:#5a6a8a">3</div>
+        <div class="points-label">Right Winner<br><span style="font-size:0.7rem">Any margin</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Founders ── -->
+<section>
+  <h2 class="section-title">Meet the <span>Founders</span></h2>
+  <p class="section-subtitle">The legends who started this club</p>
+  <div class="founders-grid">
+    <div class="founder-card">
+      <div class="founder-avatar">W</div>
+      <div class="founder-name">William</div>
+      <div class="founder-title">Co-Founder &amp; Commissioner</div>
+      <div class="founder-quote">"Bear Down, Chicago Bears. Make every touchdown the best you can."</div>
+      <div class="founder-badges">
+        <span class="badge badge-founder">Founder</span>
+        <span class="badge badge-legend">Legend</span>
+      </div>
+    </div>
+    <div class="founder-card">
+      <div class="founder-avatar">B</div>
+      <div class="founder-name">Bennett</div>
+      <div class="founder-title">Co-Founder &amp; Head of Competition</div>
+      <div class="founder-quote">"Every game is a chance to prove you know football better than your friends."</div>
+      <div class="founder-badges">
+        <span class="badge badge-founder">Founder</span>
+        <span class="badge badge-legend">Legend</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QR Code ── -->
+<div class="qr-section">
+  <div class="container">
+    <h2 class="section-title" style="margin-bottom:0.4rem">Invite Your <span>Friends</span></h2>
+    <p style="color:var(--gray);margin-bottom:0.5rem;font-size:0.9rem">Scan to join Da Bears Score Club instantly — free forever!</p>
+    <div id="qrcode"></div>
+    <p style="color:var(--gray);font-size:0.82rem">🐻 Da Bears Score Club — 2027 Season</p>
+    <div style="margin-top:1.5rem">
+      <a href="register.html" class="btn btn-primary btn-lg">Join Now — It's Free</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <div>🐻 Da Bears Score Club &bull; Founded by William &amp; Bennett</div>
+  <div>Free forever. Bear Down, Chicago! 🏈</div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="app.js"></script>
+<script>
+  // Generate QR pointing to register page
+  const qrTarget = 'http://takehearson.github.com';
+  new QRCode(document.getElementById('qrcode'), {
+    text: qrTarget,
+    width: 180,
+    height: 180,
+    colorDark: '#0B162A',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H,
+  });
+</script>
+
+</body>
+</html>
