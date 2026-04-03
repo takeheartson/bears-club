@@ -69,6 +69,13 @@
       "bearsScore": 20,
       "oppScore": 17,
       "at": "2026-04-03T02:08:57.523Z"
+    },
+    {
+      "userId": "founder_william",
+      "gameId": "g5",
+      "bearsScore": 26,
+      "oppScore": 20,
+      "at": "2026-04-03T02:09:08.891Z"
     }
   ]
 }
