@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Members — Da Bears Score Club</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="bear-icon">🐻</span>
+    <span class="logo-text">Da <span>Bears</span> Club</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="games.html">Pick Scores</a></li>
+    <li><a href="rankings.html">Rankings</a></li>
+    <li><a href="members.html" class="active">Members</a></li>
+  </ul>
+  <div class="nav-auth" id="nav-auth"></div>
+</nav>
+
+<div class="page-header">
+  <h1>👥 Club Members</h1>
+  <p>Everyone who has joined Da Bears Score Club for the 2027 season.</p>
+</div>
+
+<div style="max-width:900px;margin:0 auto;padding:0 1.5rem 3rem">
+
+  <div id="member-count" style="font-size:0.85rem;color:var(--gray);margin-bottom:1.25rem"></div>
+
+  <div id="members-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem"></div>
+
+  <div id="join-cta" style="display:none;margin-top:2.5rem;text-align:center">
+    <div style="color:var(--gray);font-size:0.9rem;margin-bottom:0.75rem">Not a member yet?</div>
+    <a href="register.html" class="btn btn-primary">Join the Club — Free</a>
+  </div>
+
+</div>
+
+<footer>
+  <div>🐻 Da Bears Score Club &bull; Founded by William &amp; Bennett</div>
+  <div>Free forever. Bear Down! 🏈</div>
+</footer>
+
+<script src="app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const users  = getUsers();
+  const me     = getCurrentUser();
+  const grid   = document.getElementById('members-grid');
+  const countEl = document.getElementById('member-count');
+
+  countEl.textContent = users.length + ' member' + (users.length !== 1 ? 's' : '') + ' in the club';
+
+  if (users.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--gray)">
+      No members yet — <a href="register.html" style="color:var(--orange);font-weight:700">be the first!</a>
+    </div>`;
+  } else {
+    grid.innerHTML = users
+      .slice()
+      .sort((a, b) => {
+        if (a.isFounder && !b.isFounder) return -1;
+        if (!a.isFounder && b.isFounder) return 1;
+        return new Date(a.joinedAt) - new Date(b.joinedAt);
+      })
+      .map(u => {
+        const isMe = me && me.id === u.id;
+        const avClass = u.memberType === 'legend' ? 'player-avatar-sm legend-av' : 'player-avatar-sm';
+        const joined = new Date(u.joinedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        return `<div class="card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.6rem;padding:1.4rem 1rem${isMe ? ';outline:2px solid var(--orange)' : ''}">
+          <div class="${avClass}" style="width:52px;height:52px;font-size:1.3rem">${u.displayName[0].toUpperCase()}</div>
+          <div style="font-weight:800;font-size:1rem">${u.displayName}${isMe ? ' <span style="font-size:0.7rem;color:var(--gray)">(you)</span>' : ''}</div>
+          <div>${badgeHTML(u)}</div>
+          <div style="font-size:0.75rem;color:var(--gray)">Joined ${joined}</div>
+        </div>`;
+      }).join('');
+  }
+
+  if (!me) document.getElementById('join-cta').style.display = 'block';
+});
+</script>
+
+</body>
+</html>
