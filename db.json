@@ -41,5 +41,13 @@
       "joinedAt": "2026-04-03T02:06:55.145Z"
     }
   ],
-  "picks": []
+  "picks": [
+    {
+      "userId": "founder_william",
+      "gameId": "g1",
+      "bearsScore": 26,
+      "oppScore": 23,
+      "at": "2026-04-03T02:08:51.883Z"
+    }
+  ]
 }
