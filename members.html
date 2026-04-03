@@ -47,8 +47,7 @@
 
 <script src="app.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  await DB_READY;
+function renderMembers() {
   const users  = getUsers();
   const me     = getCurrentUser();
   const grid   = document.getElementById('members-grid');
@@ -82,6 +81,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   if (!me) document.getElementById('join-cta').style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await DB_READY;
+  renderMembers();
+  setInterval(async () => { await loadDB(); renderMembers(); }, 30000);
 });
 </script>
 
