@@ -58,7 +58,6 @@
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
     await DB_READY;
-    if (isLoggedIn()) { window.location.href = 'games.html'; return; }
 
     document.getElementById('reg-form').addEventListener('submit', async function(e) {
       e.preventDefault();
