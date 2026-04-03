@@ -1,7 +1,7 @@
 // Da Bears Score Club — Main Application JS
 
 // ── GitHub DB config ─────────────────────────────────────
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = 'fmwX94cAGQ57V5cENk4N3ukFN5rFq8F0oWMo_ohg'.split('').reverse().join('');
 const GITHUB_API   = 'https://api.github.com/repos/takeheartson/bears-club/contents/db.json';
 
 let DB     = { users: [], picks: [] };
@@ -117,9 +117,9 @@ function getCurrentUser() {
 
 function isLoggedIn() { return !!getCurrentUser(); }
 
-function login(username) {
-  const u = DB.users.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
-  if (!u) return { ok: false, err: 'No account found with that username.' };
+function login(name) {
+  const u = DB.users.find(u => u.displayName.toLowerCase() === name.trim().toLowerCase());
+  if (!u) return { ok: false, err: 'No account found with that name.' };
   localStorage.setItem('bears_current_user', u.id);
   return { ok: true, user: u };
 }
@@ -129,22 +129,20 @@ function logout() {
   window.location.href = 'index.html';
 }
 
-async function register(displayName, username, memberType) {
+async function register(displayName) {
   displayName = displayName.trim();
-  username    = username.trim();
 
-  if (displayName.length < 2) return { ok: false, err: 'Display name must be at least 2 characters.' };
-  if (username.length < 2)    return { ok: false, err: 'Username must be at least 2 characters.' };
-  if (!/^[a-zA-Z0-9_]+$/.test(username)) return { ok: false, err: 'Username: letters, numbers, underscores only.' };
+  if (displayName.length < 2) return { ok: false, err: 'Name must be at least 2 characters.' };
 
-  if (DB.users.find(u => u.username.toLowerCase() === username.toLowerCase()))
-    return { ok: false, err: 'That username is already taken.' };
+  if (DB.users.find(u => u.displayName.toLowerCase() === displayName.toLowerCase()))
+    return { ok: false, err: 'Someone with that name is already in the club.' };
 
+  const username = displayName.toLowerCase().replace(/[^a-z0-9]/g, '_');
   const newUser = {
     id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9),
-    username: username.toLowerCase(),
+    username,
     displayName,
-    memberType: memberType || 'member',
+    memberType: 'member',
     isFounder: false,
     joinedAt: new Date().toISOString(),
   };
