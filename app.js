@@ -47,26 +47,27 @@ async function saveDB() {
 // Exposed so pages can await it before rendering
 const DB_READY = loadDB();
 
-// ── 2027 Bears Schedule ──────────────────────────────────
+// ── 2026 Bears Schedule ──────────────────────────────────
+// Full schedule TBD — releases May 2026. Opponents based on 2026 rotation.
 const SCHEDULE = [
-  { id:'g1',  week:1,  date:'Thu, Sep 9, 2027',   time:'8:20 PM ET', home:true,  opp:'Green Bay Packers',      oppShort:'GB',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g2',  week:2,  date:'Sun, Sep 14, 2027',  time:'1:00 PM ET', home:false, opp:'Minnesota Vikings',      oppShort:'MIN', venue:'U.S. Bank Stadium',       complete:false, finalBears:null, finalOpp:null },
-  { id:'g3',  week:3,  date:'Sun, Sep 21, 2027',  time:'1:00 PM ET', home:true,  opp:'Detroit Lions',          oppShort:'DET', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g4',  week:4,  date:'Sun, Sep 28, 2027',  time:'4:25 PM ET', home:false, opp:'Dallas Cowboys',         oppShort:'DAL', venue:'AT&T Stadium',            complete:false, finalBears:null, finalOpp:null },
-  { id:'g5',  week:5,  date:'Sun, Oct 5, 2027',   time:'1:00 PM ET', home:true,  opp:'Kansas City Chiefs',     oppShort:'KC',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g6',  week:6,  date:'Sun, Oct 12, 2027',  time:'4:05 PM ET', home:false, opp:'Los Angeles Rams',       oppShort:'LAR', venue:'SoFi Stadium',            complete:false, finalBears:null, finalOpp:null },
-  { id:'g7',  week:7,  date:'Sun, Oct 19, 2027',  time:'1:00 PM ET', home:true,  opp:'New England Patriots',   oppShort:'NE',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g8',  week:8,  date:'Mon, Oct 27, 2027',  time:'8:15 PM ET', home:false, opp:'Philadelphia Eagles',    oppShort:'PHI', venue:'Lincoln Financial Field', complete:false, finalBears:null, finalOpp:null },
-  { id:'g9',  week:9,  date:'Week of Nov 2, 2027',time:'',           home:null,  opp:'BYE WEEK',               oppShort:'BYE', venue:'',                        complete:false, finalBears:null, finalOpp:null, isBye:true },
-  { id:'g10', week:10, date:'Sun, Nov 9, 2027',   time:'1:00 PM ET', home:true,  opp:'Washington Commanders',  oppShort:'WAS', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g11', week:11, date:'Sun, Nov 16, 2027',  time:'4:25 PM ET', home:false, opp:'Green Bay Packers',      oppShort:'GB',  venue:'Lambeau Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g12', week:12, date:'Thu, Nov 27, 2027',  time:'12:30 PM ET',home:true,  opp:'New York Giants',        oppShort:'NYG', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g13', week:13, date:'Sun, Nov 30, 2027',  time:'1:00 PM ET', home:false, opp:'Detroit Lions',          oppShort:'DET', venue:'Ford Field',              complete:false, finalBears:null, finalOpp:null },
-  { id:'g14', week:14, date:'Sun, Dec 7, 2027',   time:'1:00 PM ET', home:true,  opp:'Minnesota Vikings',      oppShort:'MIN', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g15', week:15, date:'Sun, Dec 14, 2027',  time:'4:05 PM ET', home:false, opp:'Cincinnati Bengals',     oppShort:'CIN', venue:'Paycor Stadium',          complete:false, finalBears:null, finalOpp:null },
-  { id:'g16', week:16, date:'Sun, Dec 21, 2027',  time:'1:00 PM ET', home:true,  opp:'Arizona Cardinals',      oppShort:'ARI', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
-  { id:'g17', week:17, date:'Sat, Dec 27, 2027',  time:'8:15 PM ET', home:false, opp:'Seattle Seahawks',       oppShort:'SEA', venue:'Lumen Field',             complete:false, finalBears:null, finalOpp:null },
-  { id:'g18', week:18, date:'Sun, Jan 3, 2028',   time:'1:00 PM ET', home:true,  opp:'Tampa Bay Buccaneers',   oppShort:'TB',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g1',  week:1,  date:'Thu, Sep 10, 2026',  time:'TBD', home:true,  opp:'Green Bay Packers',      oppShort:'GB',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g2',  week:2,  date:'Sun, Sep 13, 2026',  time:'TBD', home:false, opp:'Houston Texans',         oppShort:'HOU', venue:'NRG Stadium',             complete:false, finalBears:null, finalOpp:null },
+  { id:'g3',  week:3,  date:'Sun, Sep 20, 2026',  time:'TBD', home:true,  opp:'Indianapolis Colts',     oppShort:'IND', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g4',  week:4,  date:'Sun, Sep 27, 2026',  time:'TBD', home:false, opp:'Minnesota Vikings',      oppShort:'MIN', venue:'U.S. Bank Stadium',       complete:false, finalBears:null, finalOpp:null },
+  { id:'g5',  week:5,  date:'Sun, Oct 4, 2026',   time:'TBD', home:true,  opp:'Detroit Lions',          oppShort:'DET', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g6',  week:6,  date:'Sun, Oct 11, 2026',  time:'TBD', home:false, opp:'Jacksonville Jaguars',   oppShort:'JAX', venue:'EverBank Stadium',        complete:false, finalBears:null, finalOpp:null },
+  { id:'g7',  week:7,  date:'Sun, Oct 18, 2026',  time:'TBD', home:true,  opp:'Los Angeles Rams',       oppShort:'LAR', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g8',  week:8,  date:'Sun, Oct 25, 2026',  time:'TBD', home:false, opp:'Green Bay Packers',      oppShort:'GB',  venue:'Lambeau Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g9',  week:9,  date:'Week of Nov 1, 2026', time:'',   home:null,  opp:'BYE WEEK',               oppShort:'BYE', venue:'',                        complete:false, finalBears:null, finalOpp:null, isBye:true },
+  { id:'g10', week:10, date:'Sun, Nov 8, 2026',   time:'TBD', home:true,  opp:'Tennessee Titans',       oppShort:'TEN', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g11', week:11, date:'Sun, Nov 15, 2026',  time:'TBD', home:false, opp:'Detroit Lions',          oppShort:'DET', venue:'Ford Field',              complete:false, finalBears:null, finalOpp:null },
+  { id:'g12', week:12, date:'Thu, Nov 26, 2026',  time:'TBD', home:false, opp:'Dallas Cowboys',         oppShort:'DAL', venue:'AT&T Stadium',            complete:false, finalBears:null, finalOpp:null },
+  { id:'g13', week:13, date:'Sun, Nov 29, 2026',  time:'TBD', home:true,  opp:'Minnesota Vikings',      oppShort:'MIN', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g14', week:14, date:'Sun, Dec 6, 2026',   time:'TBD', home:false, opp:'San Francisco 49ers',    oppShort:'SF',  venue:'Levi\'s Stadium',         complete:false, finalBears:null, finalOpp:null },
+  { id:'g15', week:15, date:'Sun, Dec 13, 2026',  time:'TBD', home:true,  opp:'Carolina Panthers',      oppShort:'CAR', venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g16', week:16, date:'Sun, Dec 20, 2026',  time:'TBD', home:false, opp:'Atlanta Falcons',        oppShort:'ATL', venue:'Mercedes-Benz Stadium',   complete:false, finalBears:null, finalOpp:null },
+  { id:'g17', week:17, date:'Sun, Dec 27, 2026',  time:'TBD', home:true,  opp:'New Orleans Saints',     oppShort:'NO',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
+  { id:'g18', week:18, date:'Sun, Jan 3, 2027',   time:'TBD', home:false, opp:'Tampa Bay Buccaneers',   oppShort:'TB',  venue:'Raymond James Stadium',   complete:false, finalBears:null, finalOpp:null },
 ];
 
 // ── Points Calculator ────────────────────────────────────
