@@ -1,0 +1,7 @@
+{
+  "users": [
+    {"id":"founder_william","username":"william","displayName":"William","memberType":"legend","isFounder":true,"joinedAt":"2027-01-01T00:00:00.000Z"},
+    {"id":"founder_bennett","username":"bennett","displayName":"Bennett","memberType":"legend","isFounder":true,"joinedAt":"2027-01-01T00:00:00.000Z"}
+  ],
+  "picks": []
+}

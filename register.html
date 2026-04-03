@@ -17,6 +17,7 @@
     <li><a href="index.html">Home</a></li>
     <li><a href="games.html">Pick Scores</a></li>
     <li><a href="rankings.html">Rankings</a></li>
+    <li><a href="members.html">Members</a></li>
   </ul>
   <div class="nav-auth" id="nav-auth"></div>
 </nav>
@@ -83,23 +84,31 @@
 
 <script src="app.js"></script>
 <script>
-  // If already logged in, redirect
-  if (isLoggedIn()) window.location.href = 'games.html';
+  document.addEventListener('DOMContentLoaded', async () => {
+    await DB_READY;
+    if (isLoggedIn()) { window.location.href = 'games.html'; return; }
 
-  document.getElementById('reg-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name  = document.getElementById('displayName').value;
-    const uname = document.getElementById('username').value;
-    const mtype = document.querySelector('input[name="mtype"]:checked').value;
-    const msg   = document.getElementById('msg');
+    document.getElementById('reg-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name  = document.getElementById('displayName').value;
+      const uname = document.getElementById('username').value;
+      const mtype = document.querySelector('input[name="mtype"]:checked').value;
+      const msg   = document.getElementById('msg');
+      const btn   = e.target.querySelector('button[type="submit"]');
 
-    const res = register(name, uname, mtype);
-    if (res.ok) {
-      msg.innerHTML = '<div class="alert alert-success">🎉 Welcome to Da Bears Club! Taking you to the picks...</div>';
-      setTimeout(() => location.href = 'games.html', 1400);
-    } else {
-      msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
-    }
+      btn.disabled = true;
+      btn.textContent = 'Saving...';
+
+      const res = await register(name, uname, mtype);
+      if (res.ok) {
+        msg.innerHTML = '<div class="alert alert-success">🎉 Welcome to Da Bears Club! Taking you to the picks...</div>';
+        setTimeout(() => location.href = 'games.html', 1400);
+      } else {
+        msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
+        btn.disabled = false;
+        btn.textContent = 'Create My Account — Free!';
+      }
+    });
   });
 </script>
 

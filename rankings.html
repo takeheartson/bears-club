@@ -184,7 +184,8 @@ function renderTable(ranked) {
   }).join('');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await DB_READY;
   const ranked = getRankings();
   const user   = getCurrentUser();
 

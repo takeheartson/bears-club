@@ -1,13 +1,53 @@
 // Da Bears Score Club — Main Application JS
 
-const SK = {
-  USERS: 'bears_users',
-  CURRENT: 'bears_current_user',
-  PICKS: 'bears_picks',
-};
+// ── GitHub DB config ─────────────────────────────────────
+const GITHUB_TOKEN = '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';
+const GITHUB_API   = 'https://api.github.com/repos/takeheartson/bears-club/contents/db.json';
+
+let DB     = { users: [], picks: [] };
+let DB_SHA = null;
+
+async function loadDB() {
+  try {
+    const res  = await fetch(GITHUB_API, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+    });
+    const data = await res.json();
+    DB     = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+    DB_SHA = data.sha;
+  } catch (e) {
+    console.warn('DB load failed, starting empty', e);
+  }
+  if (!DB.users) DB.users = [];
+  if (!DB.picks) DB.picks = [];
+  initFounders(DB.users);
+}
+
+async function saveDB() {
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(DB, null, 2))));
+    const res = await fetch(GITHUB_API, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json',
+      },
+      body: JSON.stringify({ message: 'db update', content, sha: DB_SHA })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      DB_SHA = data.content.sha;
+    }
+  } catch (e) {
+    console.error('DB save failed', e);
+  }
+}
+
+// Exposed so pages can await it before rendering
+const DB_READY = loadDB();
 
 // ── 2027 Bears Schedule ──────────────────────────────────
-// Bears = home unless home:false. finalBears/finalOpp = null until complete.
 const SCHEDULE = [
   { id:'g1',  week:1,  date:'Thu, Sep 9, 2027',   time:'8:20 PM ET', home:true,  opp:'Green Bay Packers',      oppShort:'GB',  venue:'Soldier Field',           complete:false, finalBears:null, finalOpp:null },
   { id:'g2',  week:2,  date:'Sun, Sep 14, 2027',  time:'1:00 PM ET', home:false, opp:'Minnesota Vikings',      oppShort:'MIN', venue:'U.S. Bank Stadium',       complete:false, finalBears:null, finalOpp:null },
@@ -30,11 +70,6 @@ const SCHEDULE = [
 ];
 
 // ── Points Calculator ────────────────────────────────────
-// Exact:           10 pts
-// Right result + within 3 each: 7 pts
-// Right result + within 7 each: 5 pts
-// Right result only:             3 pts
-// Wrong:                         0 pts
 function calcPoints(pick, game) {
   if (!game.complete || game.finalBears === null) return null;
 
@@ -69,42 +104,32 @@ function initFounders(users) {
     { id:'founder_william', username:'william', displayName:'William', memberType:'legend', isFounder:true, joinedAt:'2027-01-01T00:00:00.000Z' },
     { id:'founder_bennett', username:'bennett', displayName:'Bennett', memberType:'legend', isFounder:true, joinedAt:'2027-01-01T00:00:00.000Z' },
   ];
-  let changed = false;
-  seeds.forEach(s => {
-    if (!users.find(u => u.id === s.id)) { users.push(s); changed = true; }
-  });
-  return changed;
+  seeds.forEach(s => { if (!users.find(u => u.id === s.id)) users.push(s); });
 }
 
-function getUsers() {
-  let users = JSON.parse(localStorage.getItem(SK.USERS) || '[]');
-  if (initFounders(users)) localStorage.setItem(SK.USERS, JSON.stringify(users));
-  return users;
-}
-
-function saveUsers(u) { localStorage.setItem(SK.USERS, JSON.stringify(u)); }
+function getUsers() { return DB.users; }
 
 function getCurrentUser() {
-  const id = localStorage.getItem(SK.CURRENT);
+  const id = localStorage.getItem('bears_current_user');
   if (!id) return null;
-  return getUsers().find(u => u.id === id) || null;
+  return DB.users.find(u => u.id === id) || null;
 }
 
 function isLoggedIn() { return !!getCurrentUser(); }
 
 function login(username) {
-  const u = getUsers().find(u => u.username.toLowerCase() === username.trim().toLowerCase());
+  const u = DB.users.find(u => u.username.toLowerCase() === username.trim().toLowerCase());
   if (!u) return { ok: false, err: 'No account found with that username.' };
-  localStorage.setItem(SK.CURRENT, u.id);
+  localStorage.setItem('bears_current_user', u.id);
   return { ok: true, user: u };
 }
 
 function logout() {
-  localStorage.removeItem(SK.CURRENT);
+  localStorage.removeItem('bears_current_user');
   window.location.href = 'index.html';
 }
 
-function register(displayName, username, memberType) {
+async function register(displayName, username, memberType) {
   displayName = displayName.trim();
   username    = username.trim();
 
@@ -112,8 +137,7 @@ function register(displayName, username, memberType) {
   if (username.length < 2)    return { ok: false, err: 'Username must be at least 2 characters.' };
   if (!/^[a-zA-Z0-9_]+$/.test(username)) return { ok: false, err: 'Username: letters, numbers, underscores only.' };
 
-  const users = getUsers();
-  if (users.find(u => u.username.toLowerCase() === username.toLowerCase()))
+  if (DB.users.find(u => u.username.toLowerCase() === username.toLowerCase()))
     return { ok: false, err: 'That username is already taken.' };
 
   const newUser = {
@@ -124,37 +148,36 @@ function register(displayName, username, memberType) {
     isFounder: false,
     joinedAt: new Date().toISOString(),
   };
-  users.push(newUser);
-  saveUsers(users);
-  localStorage.setItem(SK.CURRENT, newUser.id);
+  DB.users.push(newUser);
+  await saveDB();
+  localStorage.setItem('bears_current_user', newUser.id);
   return { ok: true, user: newUser };
 }
 
 // ── Picks ────────────────────────────────────────────────
-function getPicks() { return JSON.parse(localStorage.getItem(SK.PICKS) || '[]'); }
+function getPicks() { return DB.picks; }
 
-function savePick(gameId, bearsScore, oppScore) {
+async function savePick(gameId, bearsScore, oppScore) {
   const user = getCurrentUser();
   if (!user) return { ok: false, err: 'Sign in to make picks.' };
 
   const game = SCHEDULE.find(g => g.id === gameId);
-  if (!game || game.isBye)     return { ok: false, err: 'Invalid game.' };
-  if (game.complete)           return { ok: false, err: 'Game already finished.' };
+  if (!game || game.isBye) return { ok: false, err: 'Invalid game.' };
+  if (game.complete)       return { ok: false, err: 'Game already finished.' };
 
-  const picks = getPicks();
-  const idx   = picks.findIndex(p => p.userId === user.id && p.gameId === gameId);
-  const pick  = { userId: user.id, gameId, bearsScore: Math.max(0, parseInt(bearsScore)||0), oppScore: Math.max(0, parseInt(oppScore)||0), at: new Date().toISOString() };
-  if (idx >= 0) picks[idx] = pick; else picks.push(pick);
-  localStorage.setItem(SK.PICKS, JSON.stringify(picks));
+  const idx  = DB.picks.findIndex(p => p.userId === user.id && p.gameId === gameId);
+  const pick = { userId: user.id, gameId, bearsScore: Math.max(0, parseInt(bearsScore)||0), oppScore: Math.max(0, parseInt(oppScore)||0), at: new Date().toISOString() };
+  if (idx >= 0) DB.picks[idx] = pick; else DB.picks.push(pick);
+  await saveDB();
   return { ok: true };
 }
 
 function getUserPick(userId, gameId) {
-  return getPicks().find(p => p.userId === userId && p.gameId === gameId) || null;
+  return DB.picks.find(p => p.userId === userId && p.gameId === gameId) || null;
 }
 
 function userStats(userId) {
-  const picks = getPicks().filter(p => p.userId === userId);
+  const picks = DB.picks.filter(p => p.userId === userId);
   let total = 0, correct = 0, exact = 0, scored = 0;
   picks.forEach(p => {
     const g = SCHEDULE.find(g => g.id === p.gameId);
@@ -166,7 +189,7 @@ function userStats(userId) {
 }
 
 function getRankings() {
-  return getUsers()
+  return DB.users
     .map(u => ({ ...u, ...userStats(u.id) }))
     .sort((a, b) => {
       if (b.total !== a.total) return b.total - a.total;
@@ -180,7 +203,7 @@ function getRankings() {
 
 // ── UI helpers ───────────────────────────────────────────
 function badgeHTML(user) {
-  if (user.isFounder)              return '<span class="badge badge-founder">Founder</span>';
+  if (user.isFounder)               return '<span class="badge badge-founder">Founder</span>';
   if (user.memberType === 'legend') return '<span class="badge badge-legend">Legend</span>';
   return '<span class="badge badge-member">Member</span>';
 }
@@ -211,7 +234,7 @@ function requireAuth(back) {
 }
 
 // ── Init ─────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  getUsers(); // seeds founders
+document.addEventListener('DOMContentLoaded', async () => {
+  await DB_READY;
   updateNav();
 });

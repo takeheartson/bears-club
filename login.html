@@ -17,6 +17,7 @@
     <li><a href="index.html">Home</a></li>
     <li><a href="games.html">Pick Scores</a></li>
     <li><a href="rankings.html">Rankings</a></li>
+    <li><a href="members.html">Members</a></li>
   </ul>
   <div class="nav-auth" id="nav-auth"></div>
 </nav>
@@ -51,21 +52,24 @@
 
 <script src="app.js"></script>
 <script>
-  if (isLoggedIn()) window.location.href = 'games.html';
+  document.addEventListener('DOMContentLoaded', async () => {
+    await DB_READY;
+    if (isLoggedIn()) { window.location.href = 'games.html'; return; }
 
-  document.getElementById('login-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const uname = document.getElementById('username').value;
-    const msg   = document.getElementById('msg');
-    const res   = login(uname);
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const uname = document.getElementById('username').value;
+      const msg   = document.getElementById('msg');
+      const res   = login(uname);
 
-    if (res.ok) {
-      msg.innerHTML = '<div class="alert alert-success">✅ Signed in! Redirecting...</div>';
-      const params = new URLSearchParams(location.search);
-      setTimeout(() => location.href = params.get('r') || 'games.html', 1000);
-    } else {
-      msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
-    }
+      if (res.ok) {
+        msg.innerHTML = '<div class="alert alert-success">✅ Signed in! Redirecting...</div>';
+        const params = new URLSearchParams(location.search);
+        setTimeout(() => location.href = params.get('r') || 'games.html', 1000);
+      } else {
+        msg.innerHTML = `<div class="alert alert-error">⚠️ ${res.err}</div>`;
+      }
+    });
   });
 </script>
 

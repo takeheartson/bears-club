@@ -47,7 +47,8 @@
 
 <script src="app.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await DB_READY;
   const users  = getUsers();
   const me     = getCurrentUser();
   const grid   = document.getElementById('members-grid');

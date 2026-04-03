@@ -219,14 +219,14 @@ function renderGameCard(game, user, showPickForm) {
   </div>`;
 }
 
-function submitPick(gameId, leftId, rightId, homeIsBears) {
+async function submitPick(gameId, leftId, rightId, homeIsBears) {
   homeIsBears = homeIsBears === 'true' || homeIsBears === true;
   const leftVal  = parseInt(document.getElementById(leftId).value)  || 0;
   const rightVal = parseInt(document.getElementById(rightId).value) || 0;
   const bearsScore = homeIsBears ? leftVal  : rightVal;
   const oppScore   = homeIsBears ? rightVal : leftVal;
 
-  const res = savePick(gameId, bearsScore, oppScore);
+  const res = await savePick(gameId, bearsScore, oppScore);
   const savedEl = document.getElementById('saved_' + gameId);
   if (res.ok) {
     if (savedEl) {
@@ -266,7 +266,8 @@ function renderMyPicks(user) {
 }
 
 // ── INIT ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await DB_READY;
   currentUser = getCurrentUser();
   const authPrompt = document.getElementById('auth-prompt');
   const gamesList  = document.getElementById('games-list');
